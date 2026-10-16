@@ -1,0 +1,4 @@
+# dsh-douyin-publish bundle patch: 把插件行插进 profile 名单。
+- insert:
+    - id: plugin-douyin-publish
+      name: 'dsh-douyin-publish'
