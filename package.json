@@ -1,0 +1,80 @@
+{
+  "name": "dsh-douyin-publish",
+  "version": "0.1.0",
+  "description": "Take a local video all the way to a Douyin creator post: open the upload page, trigger the picker, hand the file over with verification, fill the title, set visibility - then stop before publishing unless explicitly told to publish.",
+  "type": "module",
+  "main": "lib/index.js",
+  "bin": {
+    "dsh-douyin-publish": "bin/dsh-douyin-publish.mjs"
+  },
+  "exports": {
+    ".": "./lib/index.js",
+    "./pipeline": "./lib/pipeline.js",
+    "./plan": "./lib/plan.js",
+    "./handover": "./lib/handover.js",
+    "./handover.ps1": "./lib/handover.ps1",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "dsh-plugin",
+    "douyin",
+    "tiktok",
+    "video-upload",
+    "publish",
+    "creator",
+    "browser-automation",
+    "file-dialog",
+    "抖音",
+    "发布"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test/smoke.mjs"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/7gzgn/dsh-douyin-publish.git"
+  },
+  "homepage": "https://github.com/7gzgn/dsh-douyin-publish#readme",
+  "bugs": {
+    "url": "https://github.com/7gzgn/dsh-douyin-publish/issues"
+  },
+  "dsh": {
+    "compatibility": {
+      "dshReleases": {
+        "0.2.0-rc.2": "compatible"
+      }
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.4 <5.0.0",
+    "@deepseek-ai/dsh-system-prompt": ">=0.2.0-rc.2 <0.3.0-0",
+    "@deepseek-ai/dsh-tools": ">=0.2.0-rc.2 <0.3.0-0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-system-prompt": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-tools": {
+      "optional": true
+    }
+  }
+}
