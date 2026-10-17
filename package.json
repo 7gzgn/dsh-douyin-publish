@@ -1,6 +1,6 @@
 {
   "name": "dsh-douyin-publish",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Take a local video all the way to a Douyin creator post: open the upload page, trigger the picker, hand the file over with verification, fill the title, set visibility - then stop before publishing unless explicitly told to publish.",
   "type": "module",
   "main": "lib/index.js",
@@ -57,7 +57,8 @@
   "dsh": {
     "compatibility": {
       "dshReleases": {
-        "0.2.0-rc.2": "compatible"
+        "0.2.0-rc.2": "compatible",
+        "0.2.1-rc.2": "compatible"
       }
     },
     "bundle": {
