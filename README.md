@@ -120,7 +120,7 @@ douyin_upload videoPath=D:\videos\a.mp4 [platform=douyin|bilibili] title="标题
 ## 自测
 
 ```powershell
-node test/smoke.mjs   # 158 项：假浏览器 + 假 spawn + 真起一个回环小服务；断言编排序列、默认值、失败分类、版式自检、话题/标签、可见性、平台拒绝
+node test/smoke.mjs   # 160 项：假浏览器 + 假 spawn + 真起一个回环小服务；断言编排序列、默认值、失败分类、版式自检、话题/标签、可见性、平台拒绝
 ```
 
 ## License
