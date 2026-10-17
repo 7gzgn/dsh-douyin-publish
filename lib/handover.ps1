@@ -99,14 +99,30 @@ public class HandoverWin32 {
         return sb.ToString();
     }
 
-    // The classic file-name edit: dialog > ComboBoxEx32 > ComboBox > Edit (fallbacks included).
+    // The classic file-name edit: dialog > ComboBoxEx32 > ComboBox > Edit.
+    // The ComboBox level is NOT optional on this machine: the dialog under test exposes
+    // the edit only as a grandchild (dialog > ComboBoxEx32 > ComboBox > Edit). Looking
+    // for Edit directly under ComboBoxEx32 used to return IntPtr.Zero, which silently
+    // skipped the win32 path and left the clipboard fallback to guess -- measured
+    // 2026-10-17 on the Bilibili upload page (the paste landed in the address bar
+    // instead of the file-name box and the browser received no file at all).
     public static IntPtr FindFileEdit(IntPtr dialog) {
-        IntPtr combo = FindWindowEx(dialog, IntPtr.Zero, "ComboBoxEx32", null);
-        if (combo == IntPtr.Zero) { combo = FindWindowEx(dialog, IntPtr.Zero, "ComboBox", null); }
-        IntPtr edit = IntPtr.Zero;
-        if (combo != IntPtr.Zero) { edit = FindWindowEx(combo, IntPtr.Zero, "Edit", null); }
-        if (edit == IntPtr.Zero) { edit = FindWindowEx(dialog, IntPtr.Zero, "Edit", null); }
-        return edit;
+        IntPtr comboBoxEx = FindWindowEx(dialog, IntPtr.Zero, "ComboBoxEx32", null);
+        if (comboBoxEx != IntPtr.Zero) {
+            IntPtr innerCombo = FindWindowEx(comboBoxEx, IntPtr.Zero, "ComboBox", null);
+            if (innerCombo != IntPtr.Zero) {
+                IntPtr innerEdit = FindWindowEx(innerCombo, IntPtr.Zero, "Edit", null);
+                if (innerEdit != IntPtr.Zero) { return innerEdit; }
+            }
+            IntPtr direct = FindWindowEx(comboBoxEx, IntPtr.Zero, "Edit", null);
+            if (direct != IntPtr.Zero) { return direct; }
+        }
+        IntPtr combo = FindWindowEx(dialog, IntPtr.Zero, "ComboBox", null);
+        if (combo != IntPtr.Zero) {
+            IntPtr comboEdit = FindWindowEx(combo, IntPtr.Zero, "Edit", null);
+            if (comboEdit != IntPtr.Zero) { return comboEdit; }
+        }
+        return FindWindowEx(dialog, IntPtr.Zero, "Edit", null);
     }
 
     // Any descendant button whose control id matches (1 = Open/Save, 2 = Cancel).
@@ -366,6 +382,19 @@ try {
   if (-not $filled) {
     $detail = if ($null -ne $lastActual) { "last read back: '$lastActual'" } else { "last error: '$lastError'" }
     $result.error = "value-mismatch ($detail)"
+    $result.seen = @($seen)
+    $result | ConvertTo-Json -Compress -Depth 8
+    exit 1
+  }
+
+  # ---- 2z. Unverified fill is NOT success -------------------------------------------
+  # The clipboard pass cannot always read the box back. Older builds treated that as
+  # "filled" and clicked Open anyway -- measured 2026-10-17: the paste had landed in the
+  # address bar, the dialog closed, and the page got no file while the tool reported
+  # success. A write we cannot read back must fail loudly and leave the dialog open so a
+  # human can see what happened.
+  if (-not $fillVerified) {
+    $result.error = 'fill-unverified (the path was written but could not be read back, so it was NOT confirmed)'
     $result.seen = @($seen)
     $result | ConvertTo-Json -Compress -Depth 8
     exit 1
