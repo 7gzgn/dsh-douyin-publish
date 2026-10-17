@@ -25,6 +25,7 @@
 | 步 | 动作 | 细节 |
 | --- | --- | --- |
 | ① | 检查视频 | 大小 / 分辨率 / 时长 / 编码（ffprobe，拿不到也不拦） |
+| ①' | **配乐（可选）** | 给了 `bgmPath` 就先用 ffmpeg 混一段新视频：原视频有声→与原声混合（`bgmVolume` 默认 0.35）、无声→BGM 铺满；**原视频不动**，混音失败直接报错不硬发 |
 | ② | 借浏览器会话 | 用自己的会话键，和别的任务不串台 |
 | ③ | 打开投稿页 | `creator.douyin.com/creator-micro/content/upload` |
 | ④ | 等上传控件 | 轮询到 `input[type=file]` 出现为止 |
@@ -34,12 +35,22 @@
 | ⑦ | 等编辑页 | 轮询到 URL 含 `/content/post/video` |
 | ⑦' | **版式自检（编辑页）** | 标题框 / 「发布」按钮缺一个 → 同样当场报 `layout-changed` |
 | ⑧ | 填标题 | 按页面上真实的 placeholder 定位 |
-| ⑧' | **代填话题** | 往简介编辑框里逐条打 `#话题`，打完**回读**：读到几条报几条，读不到就明说"请在页面上看一眼" |
+| ⑧' | **填文案 + 代填话题** | `description` 先写进简介框，再逐条打 `#话题`，打完**回读**：读到几条报几条，读不到就明说"请在页面上看一眼" |
 | ⑨ | 设可见性 | 按页面上真实的中文标签点（公开 / 好友可见 / **仅自己可见**） |
 | ⑨' | **设封面帧** | 打开「选择封面」→ 把时间轴挪到 `coverTime`（**默认第 1 秒**，第 0 帧常是黑场）→ 确定；设不上只标 warn，不阻断 |
 | ⑩ | 发布，或**故意不发布** | `mode=draft` 时这一步记 `skipped` |
 
-失败会分类说清：`no-browser` / `no-dialog` / `handover` / `edit-page-timeout` / `layout-changed` / `visibility` / `publish`。
+失败会分类说清：`no-browser` / `no-dialog` / `handover` / `edit-page-timeout` / `layout-changed` / `visibility` / `publish` / `bgm` / `platform-unsupported`。
+
+## 平台（现在只有抖音）
+
+| 平台 | 状态 |
+| --- | --- |
+| **抖音** | ✅ 真机核对过（版式自检 + 全流程） |
+| B站 / 小红书 / X | ⛔ 只留了位置 —— 传 `platform="bilibili"` 之类会**明确拒绝**（`platform-unsupported`），不会拿抖音的选择器去瞎点 |
+
+要扩到别的平台，前提是**先真机把那个平台的投稿页走一遍**（登录态、上传入口、标题/简介框、发布按钮），
+再按 `PLATFORMS` 里的档案补选择器 —— 这是"给别人用"的底线，不能拿猜的选择器充数。
 
 ## 它依赖什么
 
