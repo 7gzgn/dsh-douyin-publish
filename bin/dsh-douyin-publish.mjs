@@ -13,7 +13,7 @@
  * @module dsh-douyin-publish/bin
  */
 
-import { VISIBILITY, UPLOAD_URL, durationText, effectiveOptions, validateInput } from '../lib/plan.js';
+import { PLATFORMS, VISIBILITY, durationText, effectiveOptions, validateInput } from '../lib/plan.js';
 import { inspectVideo } from '../lib/video.js';
 
 /** 极简参数解析。 */
@@ -33,19 +33,20 @@ function parseArgv(argv) {
   return out;
 }
 
-const USAGE = `dsh-douyin-publish —— 把本地视频送到抖音投稿页的"待发布"状态
+const USAGE = `dsh-douyin-publish —— 把本地视频送到投稿页的"待发布"状态（抖音 / B站）
 
 用法：
   dsh-douyin-publish check --video <绝对路径>     # 检查视频（时长/分辨率/编码/大小）
 
 在 DSH 里用工具（完整链路，需要浏览器插件）：
-  douyin_upload videoPath=<绝对路径> title=… [visibility=private|friends|public] [mode=draft|publish] [dryRun]
+  douyin_upload videoPath=<绝对路径> [platform=douyin|bilibili] title=… [visibility=private|friends|public] [mode=draft|publish] [dryRun]
 
 两条默认值是刻意的：
   · 可见性默认 private（${VISIBILITY.private.label}）
-  · 模式默认 draft（**不点发布**）
+  · 模式默认 draft（**不点投稿**）
 
-投稿页：${UPLOAD_URL}
+投稿页：抖音 ${PLATFORMS.douyin.uploadUrl}
+        B站 ${PLATFORMS.bilibili.uploadUrl}
 `;
 
 async function main() {
@@ -86,7 +87,7 @@ async function main() {
   if (Number.isFinite(info.durationSec)) console.log(`   · 时长：${durationText(info.durationSec)}`);
   if (info.codec) console.log(`   · 编码：${info.codec}`);
   if (info.probeSkipped === true) console.log('   · （ffprobe 不可用，元信息没拿到 —— 不影响发布）');
-  console.log(`   · 若现在发：可见性 ${VISIBILITY[options.visibility]?.label}、模式 ${options.mode === 'publish' ? '会点发布' : '停在发布前'}`);
+  console.log(`   · 若现在发：可见性 ${VISIBILITY[options.visibility]?.label}、模式 ${options.mode === 'publish' ? '会点投稿' : '停在投稿前'}`);
   return 0;
 }
 
