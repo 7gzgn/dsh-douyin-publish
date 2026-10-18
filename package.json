@@ -1,6 +1,6 @@
 {
   "name": "dsh-douyin-publish",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Take a local video all the way to a creator post on Douyin or Bilibili: optional background music mixed in with ffmpeg before upload, self-check the page layout, hand the file straight to the page's own upload control over a loopback one-file server (no native file dialog, falls back to it for huge files), fill the title, fill the caption, fill topics/tags and read them back, set visibility, pick the cover frame (Douyin, 1s by default) - then stop before publishing unless explicitly told to. Other platforms are declared but refused until they are verified on the real site.",
   "type": "module",
   "main": "lib/index.js",
